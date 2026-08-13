@@ -4,7 +4,6 @@ const { defineConfig, globalIgnores } = require('eslint/config');
 const tseslint = require('typescript-eslint');
 const angular = require('angular-eslint');
 
-
 // Blocks concrete repository implementations from leaking out of the data-access layer.
 const RESTRICTED_REPOSITORY_IMPLEMENTATIONS = {
   patterns: [
