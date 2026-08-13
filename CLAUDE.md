@@ -11,7 +11,7 @@ These rules govern every file in this repository. Read this file before writing 
   models/        domain models, enums, view models
   feature-*/     routed container components (feature-list, feature-detail, feature-edit)
   ui/            presentational components, zero injected services
-  util/          pure functions, validators
+  utils/         pure functions, validators
   ```
 - `core/` holds app-wide singletons: interceptors, notification service, guards.
 - `shared/` holds cross-feature primitives: shared models, shared UI.
@@ -55,8 +55,10 @@ default rather than restating it. Redundant boilerplate is noise, not rigour.
 - Lazy-loaded routes via `loadComponent` / `loadChildren`.
 - Use the modern control flow: `@if`, `@for`, `@switch`. Never `*ngIf` or `*ngFor`.
 - `class` and `style` bindings, never `ngClass` or `ngStyle`.
-- Prefer inline templates and styles for components under roughly 30 lines of template.
-  Use external files above that, with paths relative to the component TS file.
+- Every component is three files: `name.ts`, `name.html`, `name.scss`, in a folder named after
+  the component. Never an inline `template` or `styles`, whatever the size. A template that is
+  short today grows, and moving it later produces a diff that hides the real change. Paths are
+  relative to the component TS file. A component with no styles of its own has no `.scss`.
 
 ## Accessibility
 
