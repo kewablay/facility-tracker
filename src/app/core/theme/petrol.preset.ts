@@ -58,4 +58,28 @@ export const PetrolPreset = definePreset(Aura, {
       },
     },
   },
+  components: {
+    badge: {
+      root: {
+        borderRadius: 'var(--radius)',
+        padding: '0 var(--space-1)',
+        fontSize: '12px',
+        fontWeight: '500',
+        minWidth: 'auto',
+        height: '21px',
+      },
+      success: {
+        background: 'var(--signal-active)',
+        color: 'var(--surface)',
+      },
+      warn: {
+        background: 'var(--signal-maintenance)',
+        color: 'var(--ink)',
+      },
+      secondary: {
+        background: 'var(--signal-inactive)',
+        color: 'var(--surface)',
+      },
+    },
+  },
 });

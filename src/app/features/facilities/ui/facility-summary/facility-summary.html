@@ -3,9 +3,9 @@
   <app-data-value label="Code" [value]="facility().code" [mono]="true" />
   <app-data-value label="Type" [value]="typeLabel[facility().type]" />
 
-  <div class="status-field">
+  <div class="field">
     <span class="field-label">Status</span>
-    <app-status-tag [status]="facility().status" />
+    <app-status-badge [status]="facility().status" />
   </div>
 
   <app-data-value label="Capacity" [value]="facility().capacity" />

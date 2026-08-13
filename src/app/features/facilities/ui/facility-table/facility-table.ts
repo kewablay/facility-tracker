@@ -7,11 +7,11 @@ import { PageSelection } from '@shared/models/page-selection.model';
 import { PAGE_SIZE_OPTIONS } from '../../models/facility-query.model';
 import { FACILITY_TYPE_LABEL } from '../../models/facility-type.model';
 import { Facility } from '../../models/facility.model';
-import { StatusTag } from '../status-tag/status-tag';
+import { StatusBadge } from '../status-badge/status-badge';
 
 @Component({
   selector: 'app-facility-table',
-  imports: [DatePipe, RouterLink, ButtonModule, TableModule, StatusTag],
+  imports: [DatePipe, RouterLink, ButtonModule, TableModule, StatusBadge],
   templateUrl: './facility-table.html',
   styleUrl: './facility-table.scss',
 })

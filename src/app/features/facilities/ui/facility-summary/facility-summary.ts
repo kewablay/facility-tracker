@@ -3,11 +3,11 @@ import { Component, input } from '@angular/core';
 import { DataValue } from '@shared/ui/data-value/data-value';
 import { FACILITY_TYPE_LABEL } from '../../models/facility-type.model';
 import { Facility } from '../../models/facility.model';
-import { StatusTag } from '../status-tag/status-tag';
+import { StatusBadge } from '../status-badge/status-badge';
 
 @Component({
   selector: 'app-facility-summary',
-  imports: [DatePipe, DataValue, StatusTag],
+  imports: [DatePipe, DataValue, StatusBadge],
   templateUrl: './facility-summary.html',
   styleUrl: './facility-summary.scss',
 })

@@ -32,7 +32,7 @@
         </th>
         <td class="data-mono" data-label="Code">{{ facility.code }}</td>
         <td data-label="Type">{{ typeLabel[facility.type] }}</td>
-        <td data-label="Status"><app-status-tag [status]="facility.status" /></td>
+        <td data-label="Status"><app-status-badge [status]="facility.status" /></td>
         <td data-label="Last updated">{{ facility.lastUpdatedAt | date: 'mediumDate' }}</td>
         <td class="actions-cell">
           <button
