@@ -1,0 +1,38 @@
+<div class="toolbar">
+  <div class="field field--search">
+    <label for="facility-search">Search</label>
+    <input
+      id="facility-search"
+      pInputText
+      type="search"
+      autocomplete="off"
+      placeholder="Name or code"
+      [value]="searchTerm()"
+      (input)="onSearchInput($event)"
+    />
+  </div>
+
+  <div class="field">
+    <label for="facility-status">Status</label>
+    <p-select
+      inputId="facility-status"
+      optionLabel="label"
+      optionValue="value"
+      [options]="statusOptions"
+      [ngModel]="status()"
+      (ngModelChange)="statusChange.emit($event)"
+    />
+  </div>
+
+  @if (hasActiveFilters()) {
+    <button pButton type="button" severity="secondary" [text]="true" (click)="clearFilters.emit()">
+      Clear filters
+    </button>
+  }
+
+  <p class="result-count" aria-live="polite">
+    @if (showResultCount()) {
+      {{ resultSummary() }}
+    }
+  </p>
+</div>

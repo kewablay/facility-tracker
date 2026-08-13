@@ -1,0 +1,15 @@
+@switch (state().status) {
+  @case ('loading') {
+    <ng-content select="[stateLoading]" />
+  }
+  @case ('error') {
+    <ng-content select="[stateError]" />
+  }
+  @default {
+    @if (isEmpty()) {
+      <ng-content select="[stateEmpty]" />
+    } @else {
+      <ng-content select="[stateSuccess]" />
+    }
+  }
+}
