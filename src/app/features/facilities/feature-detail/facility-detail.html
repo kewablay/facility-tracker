@@ -1,1 +1,47 @@
-<app-page-header title="Facility" />
+<app-page-header [title]="facility()?.name ?? 'Facility'">
+  <div pageActions>
+    @if (arrivedFromList) {
+      <button pButton type="button" severity="secondary" [outlined]="true" (click)="backToList()">
+        Back to list
+      </button>
+    } @else {
+      <a pButton severity="secondary" [outlined]="true" [routerLink]="listPath">Back to list</a>
+    }
+  </div>
+</app-page-header>
+
+<app-state-container [state]="store.state()">
+  <div stateLoading class="detail-grid">
+    <div class="panel">
+      <p-skeleton height="1.5rem" width="60%" />
+      <p-skeleton height="1rem" width="40%" />
+      <p-skeleton height="1rem" width="70%" />
+      <p-skeleton height="1rem" width="35%" />
+    </div>
+    <p-skeleton height="var(--map-height)" />
+    <p class="visually-hidden" role="status">Loading facility</p>
+  </div>
+
+  <div stateError class="panel">
+    @if (store.notFound()) {
+      <h2>That facility does not exist</h2>
+      <p>The address points to a facility that is not in the register. It may have been removed.</p>
+      <a pButton [routerLink]="listPath">Go to facilities</a>
+    } @else {
+      <h2>This facility could not be loaded</h2>
+      <p>{{ errorMessage() }}</p>
+      <button pButton type="button" (click)="store.reload()">Try again</button>
+    }
+  </div>
+
+  <div stateSuccess class="detail-grid">
+    @if (facility(); as loaded) {
+      <app-facility-summary [facility]="loaded" />
+      <app-facility-map
+        [latitude]="loaded.latitude"
+        [longitude]="loaded.longitude"
+        [label]="loaded.name"
+      />
+    }
+  </div>
+</app-state-container>

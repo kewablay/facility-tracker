@@ -1,0 +1,14 @@
+@use 'ol/ol.css';
+
+app-facility-map {
+  display: block;
+}
+
+.facility-map {
+  width: 100%;
+  height: var(--map-height);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--surface);
+}

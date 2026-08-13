@@ -27,6 +27,7 @@
   --radius: 4px;
   --content-max-width: 1200px;
   --top-bar-height: 52px;
+  --map-height: 420px;
 }
 
 * {
@@ -86,6 +87,12 @@ a {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --map-height: 260px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

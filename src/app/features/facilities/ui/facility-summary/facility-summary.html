@@ -1,0 +1,18 @@
+<div class="summary">
+  <app-data-value label="Name" [value]="facility().name" />
+  <app-data-value label="Code" [value]="facility().code" [mono]="true" />
+  <app-data-value label="Type" [value]="typeLabel[facility().type]" />
+
+  <div class="status-field">
+    <span class="field-label">Status</span>
+    <app-status-tag [status]="facility().status" />
+  </div>
+
+  <app-data-value label="Capacity" [value]="facility().capacity" />
+  <app-data-value
+    label="Last updated"
+    [value]="(facility().lastUpdatedAt | date: 'medium') ?? ''"
+  />
+  <app-data-value label="Latitude" [value]="facility().latitude" [mono]="true" />
+  <app-data-value label="Longitude" [value]="facility().longitude" [mono]="true" />
+</div>
