@@ -20,6 +20,7 @@
         <th scope="col">Type</th>
         <th scope="col">Status</th>
         <th scope="col">Last updated</th>
+        <th scope="col"><span class="visually-hidden">Actions</span></th>
       </tr>
     </ng-template>
 
@@ -33,6 +34,19 @@
         <td data-label="Type">{{ typeLabel[facility.type] }}</td>
         <td data-label="Status"><app-status-tag [status]="facility.status" /></td>
         <td data-label="Last updated">{{ facility.lastUpdatedAt | date: 'mediumDate' }}</td>
+        <td class="actions-cell">
+          <button
+            pButton
+            type="button"
+            size="small"
+            severity="secondary"
+            [text]="true"
+            [attr.aria-label]="'Edit ' + facility.name"
+            (click)="edit.emit(facility)"
+          >
+            Edit
+          </button>
+        </td>
       </tr>
     </ng-template>
   </p-table>

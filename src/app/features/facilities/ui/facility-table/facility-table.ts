@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { PageSelection } from '@shared/models/page-selection.model';
 import { PAGE_SIZE_OPTIONS } from '../../models/facility-query.model';
@@ -10,7 +11,7 @@ import { StatusTag } from '../status-tag/status-tag';
 
 @Component({
   selector: 'app-facility-table',
-  imports: [DatePipe, RouterLink, TableModule, StatusTag],
+  imports: [DatePipe, RouterLink, ButtonModule, TableModule, StatusTag],
   templateUrl: './facility-table.html',
   styleUrl: './facility-table.scss',
 })
@@ -21,6 +22,7 @@ export class FacilityTable {
   readonly pageSize = input.required<number>();
 
   readonly pageChange = output<PageSelection>();
+  readonly edit = output<Facility>();
 
   protected readonly typeLabel = FACILITY_TYPE_LABEL;
   protected readonly pageSizeOptions = [...PAGE_SIZE_OPTIONS];

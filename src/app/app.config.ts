@@ -5,6 +5,7 @@ import { FacilityRepository } from '@features/facilities/data-access/facility.re
 import { InMemoryFacilityRepository } from '@features/facilities/data-access/in-memory-facility.repository';
 
 import { withComponentInputBinding } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 import { PetrolPreset } from '@core/theme/petrol.preset';
 import { environment } from '../environments/environment';
@@ -22,6 +23,7 @@ export const appConfig: ApplicationConfig = {
         options: { darkModeSelector: false },
       },
     }),
+    MessageService,
     { provide: FacilityRepository, useClass: InMemoryFacilityRepository },
   ],
 };

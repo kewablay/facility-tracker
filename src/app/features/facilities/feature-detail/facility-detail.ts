@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, computed, effect, inject, input } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -7,6 +7,8 @@ import { PageHeader } from '@shared/ui/page-header/page-header';
 import { StateContainer } from '@shared/ui/state-container/state-container';
 import { FacilityStore } from '../data-access/facility.store';
 import { FACILITIES_LIST_PATH } from '../facilities.routes';
+import { FacilityEditDialog } from '../feature-edit/facility-edit-dialog';
+import { Facility } from '../models/facility.model';
 import { FacilityMap } from '../ui/facility-map/facility-map';
 import { FacilitySummary } from '../ui/facility-summary/facility-summary';
 
@@ -21,6 +23,7 @@ import { FacilitySummary } from '../ui/facility-summary/facility-summary';
     StateContainer,
     FacilitySummary,
     FacilityMap,
+    FacilityEditDialog,
   ],
   templateUrl: './facility-detail.html',
   styleUrl: './facility-detail.scss',
@@ -34,6 +37,8 @@ export class FacilityDetail {
 
   protected readonly listPath = FACILITIES_LIST_PATH;
   protected readonly arrivedFromList = this.detectArrivalFromList();
+
+  protected readonly editing = signal<Facility | null>(null);
 
   protected readonly facility = computed(() => {
     const state = this.store.state();
@@ -51,6 +56,10 @@ export class FacilityDetail {
 
   protected backToList(): void {
     this.location.back();
+  }
+
+  protected onSaved(): void {
+    this.store.reload();
   }
 
   private detectArrivalFromList(): boolean {

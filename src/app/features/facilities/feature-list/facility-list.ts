@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
@@ -6,7 +6,9 @@ import { ButtonModule } from 'primeng/button';
 import { PageSelection } from '@shared/models/page-selection.model';
 import { PageHeader } from '@shared/ui/page-header/page-header';
 import { StateContainer } from '@shared/ui/state-container/state-container';
+import { FacilityEditDialog } from '../feature-edit/facility-edit-dialog';
 import { FacilityStatus } from '../models/facility-status.model';
+import { Facility } from '../models/facility.model';
 import { FacilityFilters } from '../ui/facility-filters/facility-filters';
 import { FacilityTableSkeleton } from '../ui/facility-table-skeleton/facility-table-skeleton';
 import { FacilityTable } from '../ui/facility-table/facility-table';
@@ -29,6 +31,7 @@ function toText(value: string | undefined): string {
     FacilityFilters,
     FacilityTable,
     FacilityTableSkeleton,
+    FacilityEditDialog,
   ],
   templateUrl: './facility-list.html',
   styleUrl: './facility-list.scss',
@@ -52,6 +55,8 @@ export class FacilityList {
       pageSize: this.pageSize(),
     }),
   );
+
+  protected readonly editing = signal<Facility | null>(null);
 
   protected readonly hasActiveFilters = computed(
     () => this.query().searchTerm !== '' || this.query().status !== null,

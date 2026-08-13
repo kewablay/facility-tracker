@@ -7,6 +7,10 @@
     } @else {
       <a pButton severity="secondary" [outlined]="true" [routerLink]="listPath">Back to list</a>
     }
+
+    @if (facility(); as loaded) {
+      <button pButton type="button" (click)="editing.set(loaded)">Edit facility</button>
+    }
   </div>
 </app-page-header>
 
@@ -45,3 +49,7 @@
     }
   </div>
 </app-state-container>
+
+@if (editing(); as target) {
+  <app-facility-edit-dialog [facility]="target" (saved)="onSaved()" (closed)="editing.set(null)" />
+}

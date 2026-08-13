@@ -39,6 +39,15 @@
       [page]="query().page"
       [pageSize]="query().pageSize"
       (pageChange)="onPageChange($event)"
+      (edit)="editing.set($event)"
     />
   </app-state-container>
 </section>
+
+@if (editing(); as target) {
+  <app-facility-edit-dialog
+    [facility]="target"
+    (saved)="store.reload()"
+    (closed)="editing.set(null)"
+  />
+}
