@@ -10,6 +10,7 @@ import { FACILITIES_LIST_PATH } from '../facilities.routes';
 import { FacilityEditDialog } from '../feature-edit/facility-edit-dialog';
 import { Facility } from '../models/facility.model';
 import { FacilityMap } from '../ui/facility-map/facility-map';
+import { FacilitySummarySkeleton } from '../ui/facility-summary-skeleton/facility-summary-skeleton';
 import { FacilitySummary } from '../ui/facility-summary/facility-summary';
 
 @Component({
@@ -22,6 +23,7 @@ import { FacilitySummary } from '../ui/facility-summary/facility-summary';
     PageHeader,
     StateContainer,
     FacilitySummary,
+    FacilitySummarySkeleton,
     FacilityMap,
     FacilityEditDialog,
   ],

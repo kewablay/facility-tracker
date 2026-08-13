@@ -16,13 +16,10 @@
 
 <app-state-container [state]="store.state()">
   <div stateLoading class="detail-grid">
-    <div class="panel">
-      <p-skeleton height="1.5rem" width="60%" />
-      <p-skeleton height="1rem" width="40%" />
-      <p-skeleton height="1rem" width="70%" />
-      <p-skeleton height="1rem" width="35%" />
+    <app-facility-summary-skeleton />
+    <div class="map-skeleton" aria-hidden="true">
+      <p-skeleton width="100%" height="100%" />
     </div>
-    <p-skeleton height="var(--map-height)" />
     <p class="visually-hidden" role="status">Loading facility</p>
   </div>
 
