@@ -68,6 +68,12 @@ module.exports = defineConfig([
     },
   },
   {
+    files: ['vitest.config.ts'],
+    rules: {
+      'no-restricted-syntax': 'off',
+    },
+  },
+  {
     files: ['**/*.html'],
     extends: [angular.configs.templateRecommended, angular.configs.templateAccessibility],
     rules: {
