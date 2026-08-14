@@ -1,5 +1,7 @@
 # Facility Tracker
 
+### Live application: **[facility-tracker-phi.vercel.app](https://facility-tracker-phi.vercel.app/)**
+
 A register of monitored infrastructure. Facility Tracker lists the facilities on a network,
 filters and pages through them, opens any one of them on a detail screen with its position on a
 map, and edits its record in place.
@@ -27,6 +29,16 @@ and a repository abstraction that keeps the user interface independent of the da
 | Mapping       | OpenLayers 10 with OpenStreetMap tiles             |
 | Testing       | Vitest with jsdom                                  |
 | Tooling       | ESLint (flat config), Prettier, husky, lint-staged |
+
+## Deployment
+
+The application is deployed to Vercel at
+[facility-tracker-phi.vercel.app](https://facility-tracker-phi.vercel.app/), built from
+`npm run build` and served as a single page application, so any address can be opened directly
+or shared.
+
+The hosted instance runs the same in-memory repository as local development, which means the
+data resets on reload and the failure simulations described below are available there too.
 
 ## Getting started
 
