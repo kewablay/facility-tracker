@@ -1,120 +1,195 @@
 # Facility Tracker
 
-A small register of monitored infrastructure. It lists facilities, filters and pages through
-them, opens one on a detail screen with its location on a map, and edits it in a dialog.
+A register of monitored infrastructure. Facility Tracker lists the facilities on a network,
+filters and pages through them, opens any one of them on a detail screen with its position on a
+map, and edits its record in place.
 
-Built with Angular 22, standalone and zoneless throughout, with signals for state.
+The application is built with Angular 22 in standalone, zoneless mode, using signals for state
+and a repository abstraction that keeps the user interface independent of the data source.
 
-## Running it
+## Features
 
-Requires Node 20.19 or newer.
+- Searchable, filterable and paginated facility register
+- Filter state held in the URL, so any view can be refreshed, bookmarked or shared
+- Detail screen with an OpenLayers map centred on the facility
+- Edit dialog with a typed reactive form, field level validation and toast confirmation
+- Distinct loading, empty, error and not found states on every screen
+- Responsive layouts, with the table collapsing into stacked cards on small screens
+- Keyboard and screen reader support throughout
+
+## Tech stack
+
+| Concern       | Choice                                             |
+| ------------- | -------------------------------------------------- |
+| Framework     | Angular 22 (standalone, zoneless, signals)         |
+| Language      | TypeScript 6                                       |
+| UI components | PrimeNG 22 with a custom `@primeuix/themes` preset |
+| Mapping       | OpenLayers 10 with OpenStreetMap tiles             |
+| Testing       | Vitest with jsdom                                  |
+| Tooling       | ESLint (flat config), Prettier, husky, lint-staged |
+
+## Getting started
+
+### Prerequisites
+
+Node.js 20.19 or newer, and npm.
+
+### Installation
 
 ```bash
 npm install
+```
+
+### Running
+
+```bash
 npm start
 ```
 
-The application is served at `http://localhost:4200/` and opens on the facilities list.
+The development server runs at `http://localhost:4200/` and opens on the facility register.
 
-| Command                | What it does                              |
-| ---------------------- | ----------------------------------------- |
-| `npm start`            | Development server with hot reload        |
-| `npm run build`        | Production build into `dist/`             |
-| `npm test`             | Unit tests with Vitest                    |
-| `npm run lint`         | ESLint over TypeScript and templates      |
-| `npm run format:check` | Prettier check, `npm run format` to write |
+### Scripts
 
-### PrimeNG licence
+| Script                 | Description                                    |
+| ---------------------- | ---------------------------------------------- |
+| `npm start`            | Development server with hot module replacement |
+| `npm run build`        | Production build, output in `dist/`            |
+| `npm run watch`        | Development build in watch mode                |
+| `npm test`             | Unit tests                                     |
+| `npm run lint`         | Lint TypeScript sources and templates          |
+| `npm run lint:fix`     | Lint and apply fixable corrections             |
+| `npm run format`       | Format the workspace with Prettier             |
+| `npm run format:check` | Verify formatting without writing              |
 
-PrimeNG 22 is a commercial release. Without a key the interface works in full but shows a
-licence banner in the corner. Paste a key into `src/environments/environment.ts`:
+## Configuration
+
+Environment values live in `src/environments/environment.ts`.
+
+PrimeNG 22 is a commercially licensed release. The interface is fully functional without a key,
+but an unlicensed build displays a licence notice. Supply a key to remove it:
 
 ```ts
 export const environment = {
   production: false,
-  primeNgLicenseKey: 'your-key-here',
+  primeNgLicenseKey: 'PRIMENG_LICENCE_KEY',
 };
 ```
 
-### Trying the failure states
-
-The data is in memory, so failures are simulated rather than real.
-
-- `http://localhost:4200/facilities?simulateFailure=true` makes the next list request fail
-  once. "Try again" then succeeds.
-- `http://localhost:4200/facilities/999` is an id that does not exist, which is treated
-  differently from a failed request.
-
-## Architecture
+## Project structure
 
 ```
 src/app/
-  core/           app-wide singletons: interceptor, error handler, notifications, guard
-  shared/         cross-feature primitives: request state, state container, page header
-  layout/         the application frame and the not found screen
+  core/                 application wide singletons
+    auth/               session service backing the route guard
+    errors/             AppError and the global error handler
+    guards/             route guards
+    http/               HTTP interceptors
+    notifications/      toast facade
+    theme/              PrimeNG theme preset
+  shared/               cross feature primitives
+    models/             RequestState, PagedResult, PageSelection
+    ui/                 StateContainer, PageHeader, DataValue
+    utils/              pagination and parsing helpers
+  layout/               application shell and the not found screen
   features/
     facilities/
-      data-access/  repository, DTO, mapper, stores
-      models/       domain models and the form's declared shape
-      feature-list/    routed container, owns list state
-      feature-detail/  routed container, owns one facility
-      feature-edit/    the edit dialog and its write store
-      ui/           presentational components, nothing injected
-      utils/        pure functions and validators
+      data-access/      repository, DTO, mapper, stores
+      models/           domain models and the form contract
+      feature-list/     register screen
+      feature-detail/   detail screen
+      feature-edit/     edit dialog
+      ui/               presentational components
+      utils/            pure functions and validators
 ```
 
-Every route is lazy, so each screen is its own chunk. OpenLayers is only in the detail chunk,
-which means the list screen never downloads a mapping library it does not use.
+Path aliases `@core/*`, `@shared/*` and `@features/*` are configured in `tsconfig.json`, and
+ESLint enforces the layering with `no-restricted-imports`.
 
-### The rules that shaped it
+## Architecture
 
-**Components never call HttpClient.** Only the repository does. Components depend on the
-abstract `FacilityRepository`, never on a concrete class, and `app.config.ts` is the only file
-that names an implementation. Moving to a real backend means writing `HttpFacilityRepository`
-and changing one line.
+### Routing
 
-**Repositories never navigate, log, or raise a toast.** They return data or throw a typed
-error. Deciding what a reader sees is the container's job.
+Every route is lazily loaded, so each screen is delivered as its own chunk. OpenLayers is
+reachable only from the detail route, which keeps the mapping library out of the register
+screen entirely.
 
-**Presentational components inject nothing.** They take `input()` and emit `output()`. The map
-receives `latitude`, `longitude` and `label` rather than a whole `Facility`, because that is
-all it needs.
+| Path              | Screen                               |
+| ----------------- | ------------------------------------ |
+| `/`               | Redirects to `/facilities`           |
+| `/facilities`     | Register, guarded by `mockAuthGuard` |
+| `/facilities/:id` | Detail                               |
+| `**`              | Not found                            |
 
-**Inputs are narrow on purpose.** `FacilityUpdate` is a `Pick` of the editable fields, so the
-type itself says that an id, a code and a capacity are not editable.
+### Data access
 
-## Decisions worth explaining
+Components depend on the abstract `FacilityRepository`, never on a concrete implementation.
+`app.config.ts` is the only file that binds the token:
 
-**State lives in the URL, not in the component.** Search term, status filter, page and page
-size are query parameters bound to inputs by `withComponentInputBinding()`. State flows one
-way: URL to input to query to repository to rows. Nothing is mirrored into a local field, so
-there is no second copy to fall out of step. A filtered view survives a refresh, can be shared
-as a link, and is still there after stepping back from a detail screen, with no persistence
-code anywhere.
+```ts
+{ provide: FacilityRepository, useClass: InMemoryFacilityRepository }
+```
 
-**One state type instead of three flags.** `RequestState<T>` is a discriminated union of
-idle, loading, success and error. Loading and error cannot both be true, because that state
-cannot be expressed. `StateContainer` projects the matching slot, so no screen writes
-`@if (loading())` alongside `@if (error())`.
+`InMemoryFacilityRepository` serves a seeded collection behind a simulated 400ms latency.
+Replacing it with a real backend means adding an `HttpFacilityRepository` and changing that one
+provider. Nothing else in the application is aware of the difference.
 
-**Editing is a dialog, not a route.** A dialog is a state of the screen the reader is already
-on, not a place. It takes a facility rather than an id, because both the list and the detail
-screen have already loaded one, and it reports `saved` and `closed` separately so the host
-decides what closing means. That is what lets one dialog serve two screens.
+Wire and domain shapes are kept apart. `FacilityDto` uses the snake_case keys and ISO date
+strings of the API, `Facility` uses camelCase and a real `Date`, and `facility.mapper.ts`
+translates between them in both directions.
 
-**Errors are translated once, at the boundary.** The interceptor maps an HTTP status to an
-`AppError` carrying copy a reader can act on, then rethrows. It shows nothing itself, because
-a failed background poll and a failed save deserve different treatment and only the caller
-knows which one happened. The global handler catches what no screen anticipated, which is by
-definition a defect, and reports it to the console and to the reader.
+### State
 
-**The whole row opens the facility, using a real link.** A single anchor per row is stretched
-across the row with `::after`. A click handler on the row would give a mouse the same result
-while leaving the row unreachable by keyboard and unannounced by a screen reader.
+Reads are owned by feature stores built on `rxResource`, which are provided per screen rather
+than globally, so a store is created and disposed with the screen that uses it.
 
-**Authentication is a visible seam, not a pretence.** `MockSessionService` always reports
-signed in and `mockAuthGuard` reads it. Swapping in real authentication is a change to one
-file, and neither the routes nor any feature has to move.
+The register keeps its search term, status filter, page and page size in the URL. Those query
+parameters are bound to component inputs by `withComponentInputBinding()`, so state flows in one
+direction: URL, to input, to query, to repository, to rows. No value is mirrored into a local
+field, which means no second copy can fall out of step, and filter state survives a reload, a
+shared link and a back navigation without any persistence code.
+
+Request state is modelled as a discriminated union rather than a set of boolean flags:
+
+```ts
+type RequestState<TData> =
+  { status: 'loading' } | { status: 'error'; message: string } | { status: 'success'; data: TData };
+```
+
+Loading and error cannot both be true, because that combination cannot be expressed.
+`StateContainer` projects the slot matching the current state, so screens declare each state
+once instead of composing conditionals.
+
+### Error handling
+
+`errorInterceptor` translates an HTTP status into an `AppError` carrying a message that names
+the problem and the next step, then rethrows it. It never displays anything itself, because a
+failed background refresh and a failed save warrant different treatment and only the caller
+knows which occurred. `GlobalErrorHandler` catches anything no screen anticipated.
+
+Presentation of expected failures belongs to the screen: the register offers a retry, the detail
+screen distinguishes a missing record from a failed request, and the edit dialog reports the
+failure without discarding a single value the user typed.
+
+### Presentation
+
+Components under `ui/` inject nothing. They receive `input()` and emit `output()`, which keeps
+them trivially testable and reusable. Interfaces are kept narrow for the same reason: the map
+component takes a latitude, a longitude and a label rather than a whole facility, and
+`FacilityUpdate` is a `Pick` of the editable fields, so the type itself records that an
+identifier, a code and a capacity are not editable.
+
+Theming is done through PrimeNG design tokens in `core/theme/petrol.preset.ts` rather than
+stylesheet overrides. Component tokens reference the palette custom properties declared in
+`src/styles.scss`, which keeps a single source of truth for colour.
+
+## Development aids
+
+The seeded repository can simulate failure conditions that a real backend would produce.
+
+| Address                            | Behaviour                                          |
+| ---------------------------------- | -------------------------------------------------- |
+| `/facilities?simulateFailure=true` | Fails the next list request once; a retry succeeds |
+| `/facilities/999`                  | An unknown identifier, rendered as not found       |
 
 ## Testing
 
@@ -122,45 +197,28 @@ file, and neither the routes nor any feature has to move.
 npm test
 ```
 
-67 tests across 12 files, run by Vitest in jsdom.
+67 tests across 12 files, executed by Vitest in jsdom.
 
-The suites test behaviour a reader could notice, not implementation detail. The container
-tests drive the real router with `RouterTestingHarness`, so routing, input binding, the guard,
-the store and the state container are all exercised the way the application uses them. Only
-the repository is substituted.
-
-Cases worth pointing at:
-
-- The map releases its DOM on destroy, so repeated visits cannot leak a map.
-- `toMapCoordinate` does not swap the pair. Reversing longitude and latitude throws nothing,
-  it just moves a Yorkshire facility into the Indian Ocean, so only an assertion catches it.
-- Submitting the edit form twice in a row sends one request.
-- A failed save keeps every value the reader typed and leaves the dialog open.
-- An unknown id and a failed request produce different screens.
+Tests target observable behaviour rather than implementation detail. Screen level suites drive
+the real router through `RouterTestingHarness`, exercising routing, input binding, the guard, the
+stores and the state container together; only the repository is substituted. Coverage includes
+the mapper round trip, filtering and pagination, coordinate validation and projection, the map's
+lifecycle cleanup, HTTP error translation, and the edit flow including double submission,
+validation failure and recovery from a failed save.
 
 ## Accessibility
 
-- Every interactive element is reachable and operable by keyboard, with a visible focus ring.
-- Failed validation moves focus to the first field that failed and names what is wrong.
-- The map carries `role="img"` and a label naming the facility and its coordinates.
-- Loading and result counts are announced through live regions.
-- Status is never carried by colour alone. Each tag has a text label.
-- The table collapses into stacked cards below 768 pixels, with each column heading travelling
-  next to its value.
+- All interactive elements are keyboard operable with a visible focus indicator
+- Table rows are navigated by a real link rather than a click handler, so rows are reachable and
+  announced correctly
+- Failed validation moves focus to the first invalid field and states what is required
+- The map exposes `role="img"` with a label naming the facility and its coordinates
+- Loading progress and result counts are announced through live regions
+- Status is conveyed by text as well as colour, and badge colours meet WCAG AA contrast
 
-## Data
+## Current limitations
 
-Fifteen facilities are seeded in memory in wire shape, so the in-memory repository exercises
-the mapper exactly as an HTTP repository would. Statuses are uneven so filtering visibly
-changes the result count, several names share a prefix so a partial search returns more than
-one row, and the coordinates are real and spread across Great Britain, including one in
-Shetland, so the map is not always the same view.
-
-Requests are delayed by 400ms to make loading states observable.
-
-## Known limits
-
-- Data is in memory. An edit survives navigation but not a page reload.
-- There is no create or delete. The brief asked for a list, a detail screen and an edit.
-- The error interceptor is wired but not yet exercised, since nothing calls `HttpClient` while
-  the repository is in memory. It is tested directly against `HttpTestingController`.
+- Data is held in memory. Edits persist across navigation but not across a reload.
+- The API surface covers reading and updating. Creation and deletion are not implemented.
+- The HTTP interceptor is wired and tested directly, but is not exercised at runtime while the
+  repository is in memory.
