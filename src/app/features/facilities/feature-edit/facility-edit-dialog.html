@@ -1,0 +1,19 @@
+<p-dialog
+  header="Edit facility"
+  [(visible)]="visible"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [closeOnEscape]="true"
+  [style]="dialogWidth"
+  [breakpoints]="narrowScreenWidth"
+  (onHide)="closed.emit()"
+>
+  <app-facility-form
+    [form]="form()"
+    [saving]="editStore.saving()"
+    [submitted]="submitted()"
+    (save)="onSave()"
+    (cancelled)="visible.set(false)"
+  />
+</p-dialog>

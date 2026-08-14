@@ -1,0 +1,53 @@
+<div class="table-region" role="region" [attr.aria-label]="regionLabel()">
+  <p-table
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} facilities"
+    [value]="facilities()"
+    [lazy]="true"
+    [paginator]="true"
+    [rows]="pageSize()"
+    [first]="firstRecordIndex()"
+    [totalRecords]="total()"
+    [rowsPerPageOptions]="pageSizeOptions"
+    [showCurrentPageReport]="true"
+    [tableStyle]="tableStyle"
+    (onLazyLoad)="onLazyLoad($event)"
+  >
+    <ng-template #header>
+      <tr class="header-row">
+        <th scope="col">Name</th>
+        <th scope="col">Code</th>
+        <th scope="col">Type</th>
+        <th scope="col">Status</th>
+        <th scope="col">Last updated</th>
+        <th scope="col"><span class="visually-hidden">Actions</span></th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-row>
+      @let facility = asFacility(row);
+      <tr class="data-row">
+        <th scope="row" class="name-cell">
+          <a class="row-link" [routerLink]="[facility.id]">{{ facility.name }}</a>
+        </th>
+        <td class="data-mono" data-label="Code">{{ facility.code }}</td>
+        <td data-label="Type">{{ typeLabel[facility.type] }}</td>
+        <td data-label="Status"><app-status-badge [status]="facility.status" /></td>
+        <td data-label="Last updated">{{ facility.lastUpdatedAt | date: 'mediumDate' }}</td>
+        <td class="actions-cell">
+          <button
+            pButton
+            type="button"
+            size="small"
+            severity="secondary"
+            [text]="true"
+            [attr.aria-label]="'Edit ' + facility.name"
+            (click)="edit.emit(facility)"
+          >
+            Edit
+          </button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

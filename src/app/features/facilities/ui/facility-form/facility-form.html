@@ -1,0 +1,109 @@
+<form class="facility-form" [formGroup]="form()" (ngSubmit)="save.emit()">
+  <div class="field" #field data-field="name">
+    <label for="facility-name">Name</label>
+    <input
+      id="facility-name"
+      pInputText
+      type="text"
+      formControlName="name"
+      [attr.aria-invalid]="showsError('name')"
+      [attr.aria-describedby]="showsError('name') ? errorId('name') : null"
+    />
+    @if (showsError('name')) {
+      <p class="field-error" [id]="errorId('name')">{{ errorMessage('name') }}</p>
+    }
+  </div>
+
+  <div class="field" #field data-field="type">
+    <label for="facility-type">Type</label>
+    <select
+      id="facility-type"
+      formControlName="type"
+      [attr.aria-invalid]="showsError('type')"
+      [attr.aria-describedby]="showsError('type') ? errorId('type') : null"
+    >
+      @for (option of typeOptions; track option) {
+        <option [value]="option">{{ typeLabel[option] }}</option>
+      }
+    </select>
+    @if (showsError('type')) {
+      <p class="field-error" [id]="errorId('type')">{{ errorMessage('type') }}</p>
+    }
+  </div>
+
+  <div class="field" #field data-field="status">
+    <label for="facility-status">Status</label>
+    <select
+      id="facility-status"
+      formControlName="status"
+      [attr.aria-invalid]="showsError('status')"
+      [attr.aria-describedby]="showsError('status') ? errorId('status') : null"
+    >
+      @for (option of statusOptions; track option) {
+        <option [value]="option">{{ statusLabel[option] }}</option>
+      }
+    </select>
+    @if (showsError('status')) {
+      <p class="field-error" [id]="errorId('status')">{{ errorMessage('status') }}</p>
+    }
+  </div>
+
+  <div class="field" #field data-field="latitude">
+    <label for="facility-latitude">Latitude</label>
+    <input
+      id="facility-latitude"
+      pInputText
+      class="data-mono"
+      type="number"
+      step="any"
+      formControlName="latitude"
+      [attr.aria-invalid]="showsError('latitude')"
+      [attr.aria-describedby]="showsError('latitude') ? errorId('latitude') : null"
+    />
+    @if (showsError('latitude')) {
+      <p class="field-error" [id]="errorId('latitude')">{{ errorMessage('latitude') }}</p>
+    }
+  </div>
+
+  <div class="field" #field data-field="longitude">
+    <label for="facility-longitude">Longitude</label>
+    <input
+      id="facility-longitude"
+      pInputText
+      class="data-mono"
+      type="number"
+      step="any"
+      formControlName="longitude"
+      [attr.aria-invalid]="showsError('longitude')"
+      [attr.aria-describedby]="showsError('longitude') ? errorId('longitude') : null"
+    />
+    @if (showsError('longitude')) {
+      <p class="field-error" [id]="errorId('longitude')">{{ errorMessage('longitude') }}</p>
+    }
+  </div>
+
+  <div class="actions">
+    <button
+      pButton
+      class="save-button"
+      type="submit"
+      [disabled]="saving()"
+      [attr.aria-busy]="saving()"
+    >
+      @if (saving()) {
+        <i class="pi pi-spinner pi-spin" aria-hidden="true"></i>
+      }
+      Save changes
+    </button>
+    <button
+      pButton
+      type="button"
+      severity="secondary"
+      [outlined]="true"
+      [disabled]="saving()"
+      (click)="cancelled.emit()"
+    >
+      Cancel
+    </button>
+  </div>
+</form>

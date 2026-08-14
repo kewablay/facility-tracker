@@ -1,0 +1,15 @@
+<div class="table-region">
+  <table aria-hidden="true">
+    <tbody>
+      @for (row of rows(); track row) {
+        <tr>
+          @for (column of columns; track column) {
+            <td [style.width]="column"><p-skeleton height="1rem" /></td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<p class="visually-hidden" role="status">Loading facilities</p>

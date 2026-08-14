@@ -4,7 +4,6 @@ const { defineConfig, globalIgnores } = require('eslint/config');
 const tseslint = require('typescript-eslint');
 const angular = require('angular-eslint');
 
-
 // Blocks concrete repository implementations from leaking out of the data-access layer.
 const RESTRICTED_REPOSITORY_IMPLEMENTATIONS = {
   patterns: [
@@ -66,6 +65,12 @@ module.exports = defineConfig([
     files: ['src/app/features/*/data-access/**/*.ts', 'src/app/app.config.ts', '**/*.spec.ts'],
     rules: {
       'no-restricted-imports': 'off',
+    },
+  },
+  {
+    files: ['vitest.config.ts'],
+    rules: {
+      'no-restricted-syntax': 'off',
     },
   },
   {

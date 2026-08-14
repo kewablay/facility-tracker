@@ -1,0 +1,8 @@
+<div class="summary" aria-hidden="true">
+  @for (field of fields; track $index) {
+    <div class="field">
+      <p-skeleton [height]="labelHeight" [width]="field.labelWidth" />
+      <p-skeleton [height]="valueHeight" [width]="field.valueWidth" />
+    </div>
+  }
+</div>
